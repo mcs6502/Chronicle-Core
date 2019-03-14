@@ -54,6 +54,24 @@ publishing {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            if( JavaVersion.current().isJava11Compatible() ) {
+                exclude 'net/openhft/chronicle/core/ClassLoading.java'
+                srcDir 'src/main/java11'
+	    }
+        }
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+test {
+    filter {
+        // run time 6 mins -- this test belongs in integTest
+        excludeTest 'UnsafeTextTest', 'coolerAppendBase10'
+    }
 }
