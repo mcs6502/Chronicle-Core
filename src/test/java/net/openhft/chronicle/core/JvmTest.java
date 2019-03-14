@@ -26,6 +26,7 @@ import javax.naming.ConfigurationException;
 import java.nio.ByteBuffer;
 
 import static net.openhft.chronicle.core.Jvm.isArm;
+import static net.openhft.chronicle.core.Jvm.isOpenJ9;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeFalse;
@@ -131,7 +132,7 @@ public class JvmTest {
 
     @Test
     public void classMetrics() {
-        assumeFalse(isArm());
+        assumeFalse(isArm() || isOpenJ9());
         assertEquals("ClassMetrics{offset=12, length=16}",
                 Jvm.classMetrics(ClassA.class).toString());
         assertEquals("ClassMetrics{offset=12, length=16}",

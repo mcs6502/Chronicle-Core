@@ -67,6 +67,8 @@ public enum Jvm {
     private static final boolean SAFEPOINT_ENABLED = Boolean.getBoolean("jvm.safepoint.enabled");
     private static final boolean IS_ARM = Boolean.getBoolean("jvm.isarm") ||
             System.getProperty("os.arch", "?").startsWith("arm") || System.getProperty("os.arch", "?").startsWith("aarch");
+    private static final boolean IS_OPEN_J9 = System.getProperty("java.vendor",
+            "").toLowerCase().contains("openj9");
     private static final Map<Class, ClassMetrics> CLASS_METRICS_MAP =
             new ConcurrentHashMap<>();
     private static Map<Class, Integer> PRIMITIVE_SIZE = new HashMap<Class, Integer>() {{
@@ -628,6 +630,15 @@ public enum Jvm {
 
     public static boolean isArm() {
         return IS_ARM;
+    }
+
+    /**
+     * Queries whether this code is executing on a OpenJ9 VM.
+     *
+     * @return true if this code is executing on a OpenJ9 VM
+     */
+    public static boolean isOpenJ9() {
+        return IS_OPEN_J9;
     }
 
     public static ClassMetrics classMetrics(Class c) throws IllegalArgumentException {
