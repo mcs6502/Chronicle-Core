@@ -74,4 +74,8 @@ test {
         // run time 6 mins -- this test belongs in integTest
         excludeTest 'UnsafeTextTest', 'coolerAppendBase10'
     }
+    def javaVendor = System.properties['java.vendor']
+    if (javaVendor.toLowerCase().contains('openj9')) {
+        jvmArgs '-XX:+CompactStrings' // required for StringUtils on OpenJ9
+    }
 }
