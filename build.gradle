@@ -57,10 +57,8 @@ publishing {
 sourceSets {
     main {
         java {
-            if( JavaVersion.current().isJava11Compatible() ) {
-                exclude 'net/openhft/chronicle/core/ClassLoading.java'
-                srcDir 'src/main/java11'
-	    }
+            def java11 = JavaVersion.current().isJava11Compatible()
+            srcDir "src/main/${java11 ? 'java11' : 'java1.8'}"
         }
     }
 }
