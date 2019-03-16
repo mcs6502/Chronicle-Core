@@ -41,6 +41,9 @@ public class ThreadDump {
         ignored.add("chronicle-weak-reference-cleaner");
         for (int i = 0, max = Runtime.getRuntime().availableProcessors(); i < max; i++)
             ignored.add("ForkJoinPool.commonPool-worker-" + i);
+        if (Jvm.isOpenJ9()) {
+            ignored.add("MemoryMXBean notification dispatcher");
+        }
     }
 
     public void ignore(String threadName) {
