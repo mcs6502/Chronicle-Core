@@ -26,17 +26,17 @@ import java.util.Collection;
 @FunctionalInterface
 public interface Closeable extends java.io.Closeable {
 
-    static void closeQuietly(@NotNull Object... closables) {
-        closeQuietly((Object) closables);
+    static void closeQuietly(@Nullable Object o, @NotNull Object... a) {
+        closeQuietly(o);
+        closeQuietly(a);
     }
 
     static void closeQuietly(@Nullable Object o) {
+        // this if-else run assumes that the collection itself isn't closeable
         if (o instanceof Collection) {
-            ((Collection) o).forEach(Closeable::closeQuietly);
+            closeQuietly((Collection) o);
         } else if (o instanceof Object[]) {
-            for (Object o2 : (Object[]) o) {
-                closeQuietly(o2);
-            }
+            closeQuietly((Object[]) o);
         } else if (o instanceof java.io.Closeable) {
             try {
                 ((java.io.Closeable) o).close();
@@ -44,6 +44,28 @@ public interface Closeable extends java.io.Closeable {
                 LoggerFactory.getLogger(Closeable.class).debug("", e);
             }
         }
+    }
+
+    /**
+     * Quietly closes each element of the specified array.
+     *
+     * @param a the array whose elements are to be closed
+     * @param <T> the type of array's element
+     */
+    static <T> void closeQuietly(@NotNull T[] a) {
+        for (Object o2 : a) {
+            closeQuietly(o2);
+        }
+    }
+
+    /**
+     * Quietly closes each item in the specified collection. Leaves the
+     * collection's contents intact; doesn't close the collection object.
+     *
+     * @param c the collection whose elements are to be closed
+     */
+    static void closeQuietly(@NotNull Collection<?> c) {
+        c.forEach(Closeable::closeQuietly);
     }
 
     /**
